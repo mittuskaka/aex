@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArIanda Express</title>
+    <title>Arlanda Express</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         @font-face {
@@ -154,7 +154,7 @@
                 } else {
                     timeLeft--;
                     const minutes = Math.floor(timeLeft / 60);
-                    const seconds = timeLeft % 60;
+                    const seconds = Math.floor(timeLeft % 60); // Round seconds to the nearest whole number
                     countdown.textContent = `Time remaining: ${minutes}m ${seconds}s`;
                 }
             }, 1000); // Update every second
@@ -224,7 +224,7 @@
                 } else {
                     timeLeft--;
                     const minutes = Math.floor(timeLeft / 60);
-                    const seconds = timeLeft % 60;
+                    const seconds = Math.floor(timeLeft % 60); // Round seconds to the nearest whole number
                     countdown.textContent = `Time remaining: ${minutes}m ${seconds}s`;
                 }
             }, 1000); // Update every second
@@ -232,3 +232,4 @@
     </script>
 </body>
 </html>
+
