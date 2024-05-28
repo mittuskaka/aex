@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArIanda Express</title>
+    <title>Arlanda Express</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         @font-face {
@@ -34,6 +34,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             max-width: 300px;
             margin: 0 auto;
+            position: relative;
         }
         .instruction {
             color: #555; /* Dark gray color */
@@ -91,14 +92,34 @@
             font-family: 'TransferSans', sans-serif;
             cursor: pointer;
         }
+        /* Disable long press on mobile devices */
+        #ticket-image {
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none; /* Chrome/Safari/Opera */
+            -khtml-user-select: none; /* Konqueror */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
+        }
+        .overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0);
+            z-index: 10;
+        }
     </style>
 </head>
-<body onload="checkCookie()">
+<body onload="checkCookie()" oncontextmenu="return false;">
     <div class="container">
         <h1 style="word-wrap: break-word;">Digital ticket</h1>
         <div class="box">
             <div class="instruction" id="instruction-text">Activate the ticket using the button below when boarding the train:</div>
             <button class="button" onclick="showWarning()">Activate Ticket</button>
+            <div class="overlay" id="overlay"></div>
             <img id="ticket-image" src="https://i.ibb.co/Vg6HkGc/IMG-7060.jpg" alt="Ticket">
             <div id="countdown"></div>
             <div id="expire-message">Ticket expired, please contact supplier</div>
@@ -131,10 +152,12 @@
             const ticketImage = document.getElementById('ticket-image');
             const countdown = document.getElementById('countdown');
             const expireMessage = document.getElementById('expire-message');
+            const overlay = document.getElementById('overlay');
 
             button.style.display = 'none';
             instructionText.style.display = 'none';
             ticketImage.style.display = 'block';
+            overlay.style.display = 'block';
             countdown.style.display = 'block';
             expireMessage.style.display = 'none';
 
@@ -161,10 +184,12 @@
             const ticketImage = document.getElementById('ticket-image');
             const countdown = document.getElementById('countdown');
             const expireMessage = document.getElementById('expire-message');
+            const overlay = document.getElementById('overlay');
 
             ticketImage.style.display = 'none';
             countdown.style.display = 'none';
             expireMessage.style.display = 'block';
+            overlay.style.display = 'none';
             deleteCookie('ticketActivationTime');
         }
 
@@ -214,10 +239,12 @@
             const ticketImage = document.getElementById('ticket-image');
             const countdown = document.getElementById('countdown');
             const expireMessage = document.getElementById('expire-message');
+            const overlay = document.getElementById('overlay');
 
             button.style.display = 'none';
             instructionText.style.display = 'none';
             ticketImage.style.display = 'block';
+            overlay.style.display = 'block';
             countdown.style.display = 'block';
             expireMessage.style.display = 'none';
 
@@ -236,4 +263,3 @@
     </script>
 </body>
 </html>
-
