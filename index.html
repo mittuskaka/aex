@@ -93,14 +93,13 @@
         }
     </style>
 </head>
-<body>
+<body onload="checkCookie()">
     <div class="container">
         <h1 style="word-wrap: break-word;">Digital ticket</h1>
         <div class="box">
             <div class="instruction" id="instruction-text">When you board the train, activate the ticket using the button below:</div>
             <button class="button" onclick="showWarning()">Activate Ticket</button>
             <img id="ticket-image" src="https://i.ibb.co/Vg6HkGc/IMG-7060.jpg" alt="Ticket">
-
             <div id="countdown"></div>
             <div id="expire-message">Ticket expired, please contact supplier</div>
         </div>
@@ -139,6 +138,10 @@
             countdown.style.display = 'block';
             expireMessage.style.display = 'none';
 
+            const now = new Date();
+            const expireTime = now.getTime() + 1800 * 1000; // 30 minutes from now
+            setCookie('ticketActivationTime', expireTime, 1);
+
             let timeLeft = 1800; // 30 minutes in seconds
 
             const countdownInterval = setInterval(() => {
@@ -147,6 +150,77 @@
                     ticketImage.style.display = 'none';
                     countdown.style.display = 'none';
                     expireMessage.style.display = 'block';
+                    deleteCookie('ticketActivationTime');
+                } else {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    countdown.textContent = `Time remaining: ${minutes}m ${seconds}s`;
+                }
+            }, 1000); // Update every second
+        }
+
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        function getCookie(name) {
+            const cname = name + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const ca = decodedCookie.split(';');
+            for(let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(cname) == 0) {
+                    return c.substring(cname.length, c.length);
+                }
+            }
+            return "";
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        }
+
+        function checkCookie() {
+            const expireTime = getCookie('ticketActivationTime');
+            if (expireTime) {
+                const now = new Date().getTime();
+                if (now < expireTime) {
+                    const timeLeft = (expireTime - now) / 1000;
+                    showTicket(timeLeft);
+                } else {
+                    deleteCookie('ticketActivationTime');
+                    document.getElementById('expire-message').style.display = 'block';
+                }
+            }
+        }
+
+        function showTicket(timeLeft) {
+            const button = document.querySelector('.button');
+            const instructionText = document.getElementById('instruction-text');
+            const ticketImage = document.getElementById('ticket-image');
+            const countdown = document.getElementById('countdown');
+            const expireMessage = document.getElementById('expire-message');
+
+            button.style.display = 'none';
+            instructionText.style.display = 'none';
+            ticketImage.style.display = 'block';
+            countdown.style.display = 'block';
+            expireMessage.style.display = 'none';
+
+            const countdownInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    ticketImage.style.display = 'none';
+                    countdown.style.display = 'none';
+                    expireMessage.style.display = 'block';
+                    deleteCookie('ticketActivationTime');
                 } else {
                     timeLeft--;
                     const minutes = Math.floor(timeLeft / 60);
