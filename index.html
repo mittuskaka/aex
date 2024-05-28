@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arlanda Express</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'TransferSans';
+            src: url('path/to/TransferSans.woff2') format('woff2'),
+                 url('path/to/TransferSans.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #FFF8B0; /* Slightly lighter yellow */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Noto Sans', sans-serif;
+        }
+        .container {
+            text-align: center;
+            width: 90%;
+        }
+        .box {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .instruction {
+            color: #555; /* Dark gray color */
+            margin-bottom: 10px;
+        }
+        .button {
+            background-color: #808080; /* Gray color */
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 10px;
+            width: 90%;
+            font-size: 22px;
+            font-family: 'TransferSans', sans-serif;
+            cursor: pointer;
+        }
+        #ticket-image {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+        }
+        #expire-message {
+            display: none;
+            margin-top: 20px;
+            color: red;
+        }
+        #countdown {
+            display: none;
+            margin-top: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        #warning-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 2px solid #808080;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+        .popup-button {
+            background-color: #808080;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            font-family: 'TransferSans', sans-serif;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="word-wrap: break-word;">Arlanda Express</h1>
+        <div class="box">
+            <div class="instruction" id="instruction-text">When you board the train, activate the ticket using the button below:</div>
+            <button class="button" onclick="showWarning()">Activate Ticket</button>
+            <img id="ticket-image" src="ticket.jpg" alt="Ticket">
+            <div id="countdown"></div>
+            <div id="expire-message">Ticket expired, please contact supplier</div>
+        </div>
+    </div>
+
+    <div id="warning-popup">
+        <p>Warning: Ticket must be used within 30 minutes of activation. Please do not activate before boarding.</p>
+        <button class="popup-button" onclick="proceed()">I understand</button>
+        <button class="popup-button" onclick="hideWarning()">Go back</button>
+    </div>
+
+    <script>
+        function showWarning() {
+            document.getElementById('warning-popup').style.display = 'block';
+        }
+
+        function hideWarning() {
+            document.getElementById('warning-popup').style.display = 'none';
+        }
+
+        function proceed() {
+            document.getElementById('warning-popup').style.display = 'none';
+            generateTicket();
+        }
+
+        function generateTicket() {
+            const button = document.querySelector('.button');
+            const instructionText = document.getElementById('instruction-text');
+            const ticketImage = document.getElementById('ticket-image');
+            const countdown = document.getElementById('countdown');
+            const expireMessage = document.getElementById('expire-message');
+
+            button.style.display = 'none';
+            instructionText.style.display = 'none';
+            ticketImage.style.display = 'block';
+            countdown.style.display = 'block';
+            expireMessage.style.display = 'none';
+
+            let timeLeft = 1800; // 30 minutes in seconds
+
+            const countdownInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    ticketImage.style.display = 'none';
+                    countdown.style.display = 'none';
+                    expireMessage.style.display = 'block';
+                } else {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    countdown.textContent = `Time remaining: ${minutes}m ${seconds}s`;
+                }
+            }, 1000); // Update every second
+        }
+    </script>
+</body>
+</html>
